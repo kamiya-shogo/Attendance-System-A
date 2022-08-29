@@ -2,8 +2,10 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
+  before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :admin_impossible, only: :show
   before_action :set_one_month, only: :show
+  
 
   def index
     @users = User.paginate(page: params[:page])
@@ -33,10 +35,11 @@ class UsersController < ApplicationController
 
   def update
     if @user.update_attributes(user_params)
-      flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to @user
+      flash[:success] = "#{@user.name}の情報を更新しました。"
+      redirect_to users_url
     else
-      render :edit      
+      flash[:danger] = "#{@user.name}の情報を更新できませんでした。"
+      render :edit
     end
   end
 
@@ -51,20 +54,38 @@ class UsersController < ApplicationController
 
   def update_basic_info
     if @user.update_attributes(basic_info_params)
-      flash[:success] = "#{@user.name}の基本情報を更新しました。"
+      flash[:success] = "#{@user.name}の情報を更新しました。"
     else
       flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")
     end
     redirect_to users_url
   end
 
+  def import
+    if params[:file].blank?
+      flash[:danger] = "CSVファイルが選択されていません。"
+    redirect_to users_url
+    else
+      if User.import(params[:file])
+        flash[:success] = "CSVファイルのインポートに成功しました。"
+      else
+        flash[:danger] = "CSVファイルのインポートに失敗しました。"
+      end
+      redirect_to users_url
+    end
+  end
+
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid,
+                                  :password, :password_confirmation, :basic_work_time,
+                                  :designated_work_start_time, :designated_work_end_time)
     end
 
     def basic_info_params
-      params.require(:user).permit(:department, :basic_time, :work_time)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid,
+                                  :password, :password_confirmation, :basic_work_time,
+                                  :designated_work_start_time, :designated_work_end_time)
     end
 end
