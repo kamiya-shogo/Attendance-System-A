@@ -1,0 +1,48 @@
+<% provide(:btn_text, '変更を返信する') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <%= form_with(model: @user, url: update_one_month_approval_user_attendance_path(@user), local: true, method: :patch) do |f| %>
+            <% @attendances.each do |id, attendances| %>
+              <% user = User.find(id) %>
+              <h1 class="modal-title"><%= "【#{user.name}からの1ヶ月分勤怠申請】" %></h1>
+               <table class="table table-bordered table-condensed table-hover" id="table-attendances">
+                <thead>
+                  <tr>
+                        <th>月</th>
+                        <th>指示者確認㊞</th>
+                        <th>変更</th>
+                        <th>勤怠を確認する</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% attendances.each do |day| %>              
+                    <%= f.fields_for "attendances[]", day do |attendance| %>  
+                      <tr>
+                        <td><%= day.worked_on.month %>月</td>
+                        <td><%= attendance.select :one_month_approval_status, ['なし', '申請中', '承認', '否認'] %></td>
+                        <td><%= attendance.check_box :one_month_approval_check %></td>
+                        <td><%= link_to "確認", show_confirmation_user_path(user, attendance), class: "btn btn-primary" %></td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                </tbody>
+              </table>
+              <div class="center">
+                <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block" %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

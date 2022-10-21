@@ -14,4 +14,28 @@ module AttendancesHelper
   def working_times(start, finish)
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
+
+  # 時間外計算を計算して返します。
+  def overtime_calculation(finish, end_time, next_day)
+    if  next_day == "1"
+      format("%.2f", ((finish.hour - end_time.hour) + (finish.min - end_time.min) / 60.0) +24)
+    else next_day == "0"
+      format("%.2f", (finish.hour - end_time.hour) + (finish.min - end_time.min) / 60.0)
+    end
+  end
+
+    #残業申請のステータス
+    def overwork_status_text(status)
+      case status
+      when "申請中"
+        "申請中"
+      when "否認"
+        "残業否認済"
+      when "承認"
+        "残業承認済"
+      when "なし"
+        "残業なし"
+      else
+      end
+    end
 end

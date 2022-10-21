@@ -25,6 +25,11 @@
   }
 }
 
+.notice-color {
+  text-decoration: none;
+  color: red;
+}
+
 /* 入力フォーム */
 
 .label-signup {
@@ -53,11 +58,11 @@
 
 /* 基本情報編集モーダルウインドウ */
 
-.label-basic-info {
+.label-overtime-request {
   margin-top: 5px;
 }
 
-.btn-basic-info {
+.btn-overtime-request {
   margin: 15px 0;
   width: 30%;
 }

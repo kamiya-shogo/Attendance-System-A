@@ -5,6 +5,7 @@ gem 'rails-i18n' # 今回はこのgemを追加しています。
 gem 'bcrypt'
 gem 'faker'
 gem 'roo'
+gem 'rounding'
 gem 'bootstrap-sass'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
@@ -15,6 +16,8 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'
 gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
+gem 'pry-byebug', group: :development
+gem 'pry-rails', group: :development
 
 group :development, :test do
   gem 'sqlite3'
