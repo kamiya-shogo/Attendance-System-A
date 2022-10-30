@@ -27,16 +27,16 @@
               <% else %>
                 <td>
                   <% if day.started_at.present? %>  
-                    <%= attendance.time_field :started_at, class: "form-control" %>
                     <% day.edit_started_at = day.started_at %>
+                    <%= attendance.time_field :edit_started_at, class: "form-control" %>
                   <% else %>
                     <%= attendance.time_field :edit_started_at, class: "form-control" %>
                   <% end %>
                 </td>
                 <td>
                   <% if day.finished_at.present? %>  
-                    <%= attendance.time_field :finished_at, class: "form-control" %>
                     <% day.edit_finished_at = day.finished_at %>
+                    <%= attendance.time_field :edit_finished_at, class: "form-control" %>
                   <% else %>
                     <%= attendance.time_field :edit_finished_at, class: "form-control" %>
                   <% end %>

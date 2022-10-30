@@ -7,6 +7,8 @@ class AddColumnsToAttendances < ActiveRecord::Migration[5.1]
      add_column :attendances, :attendances_approval_check, :boolean, default: false
      add_column :attendances, :edit_started_at, :datetime
      add_column :attendances, :edit_finished_at, :datetime
+     add_column :attendances, :begin_started, :datetime
+     add_column :attendances, :begin_finished, :datetime
 
      # 残業申請
      add_column :attendances, :scheduled_end_time, :datetime

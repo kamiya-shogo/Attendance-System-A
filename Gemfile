@@ -18,6 +18,7 @@ gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
 gem 'pry-byebug', group: :development
 gem 'pry-rails', group: :development
+gem 'ransack'
 
 group :development, :test do
   gem 'sqlite3'

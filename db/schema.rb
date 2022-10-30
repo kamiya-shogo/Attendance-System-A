@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220905093321) do
+ActiveRecord::Schema.define(version: 20221028123547) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 20220905093321) do
     t.boolean "attendances_approval_check", default: false
     t.datetime "edit_started_at"
     t.datetime "edit_finished_at"
+    t.datetime "begin_started"
+    t.datetime "begin_finished"
     t.datetime "scheduled_end_time"
     t.boolean "next_day", default: false
     t.boolean "overtime_next_day", default: false
@@ -39,6 +41,14 @@ ActiveRecord::Schema.define(version: 20220905093321) do
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
+  create_table "bases", force: :cascade do |t|
+    t.integer "base_number"
+    t.string "base_name"
+    t.string "base_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -48,12 +58,12 @@ ActiveRecord::Schema.define(version: 20220905093321) do
     t.string "remember_digest"
     t.boolean "admin", default: false
     t.string "affiliation"
-    t.datetime "basic_work_time", default: "2022-10-19 23:00:00"
-    t.datetime "work_time", default: "2022-10-19 22:30:00"
+    t.datetime "basic_work_time", default: "2022-10-24 23:00:00"
+    t.datetime "work_time", default: "2022-10-24 22:30:00"
     t.integer "employee_number"
     t.string "uid"
-    t.datetime "designated_work_start_time", default: "2022-10-20 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-10-20 09:00:00"
+    t.datetime "designated_work_start_time", default: "2022-10-25 00:00:00"
+    t.datetime "designated_work_end_time", default: "2022-10-25 09:00:00"
     t.boolean "superior", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end

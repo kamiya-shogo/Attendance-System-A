@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   post   '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
+  resources :bases
+
   resources :users do
     member do
       get 'edit_basic_info'
@@ -17,6 +19,9 @@ Rails.application.routes.draw do
       patch 'attendances/update_one_month_request'
       # 勤怠を確認する
       get 'show_confirmation'
+
+      # 出勤社員 
+      get 'list_of_employees'  
     end
     collection { post :import }
     resources :attendances, only: :update do 
@@ -33,6 +38,8 @@ Rails.application.routes.draw do
         # 1ヶ月の勤怠承認
         get 'edit_one_month_approval'
         patch 'update_one_month_approval'
+        # 勤怠ログ
+        get 'attendance_log'
       end
     end
   end

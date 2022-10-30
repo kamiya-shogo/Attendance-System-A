@@ -1,7 +1,7 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month]
-  before_action :set_user_id, only: [:update, :edit_overtime_request, :update_overtime_request, :edit_overtime_notice, :update_overtime_notice, :edit_attendances_change_approval, :update_attendances_change_approval, :edit_one_month_approval, :update_one_month_approval]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
+  before_action :set_user_id, only: [:update, :edit_overtime_request, :update_overtime_request, :edit_overtime_notice, :update_overtime_notice, :edit_attendances_change_approval, :update_attendances_change_approval, :edit_one_month_approval, :update_one_month_approval, :attendance_log]
+  before_action :logged_in_user, only: [:update, :edit_one_month, :attendance_log]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: [:edit_one_month]
   before_action :set_attendance, only: [:update, :edit_overtime_request, :update_overtime_request]
@@ -128,6 +128,8 @@ class AttendancesController < ApplicationController
       if item[:attendances_approval_check] == "1"
         unless item[:attendances_approval_status] == "申請中" || item[:attendances_approval_status] == "なし" 
           if item[:attendances_approval_status] == "承認"
+            attendance.begin_started = attendance.started_at
+            attendance.begin_finished = attendance.finished_at
             item[:started_at] =attendance.edit_started_at
             item[:finished_at] =attendance.edit_finished_at
           end
@@ -186,6 +188,18 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(@user)
+  end
+
+  # 勤怠ログ
+  def attendance_log
+    #1iは年、2iは月
+    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
+      year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
+      @day = DateTime.parse(year_month) if year_month.present?
+      @attendances = @user.attendances.where(attendances_approval_status: "承認").where(worked_on: @day.all_month)
+    else
+      @attendances = @user.attendances.where(attendances_approval_status: "").order("worked_on ASC")
+    end
   end
 
   private
