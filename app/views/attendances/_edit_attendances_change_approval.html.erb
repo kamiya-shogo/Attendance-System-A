@@ -60,7 +60,7 @@
                         <td><%= day.note %></td> 
                         <td><%= attendance.select :attendances_approval_status, ['なし', '申請中', '承認', '否認'] %></td>
                         <td><%= attendance.check_box :attendances_approval_check %></td>
-                        <td><%= link_to "確認", show_confirmation_user_path(user, attendance), class: "btn btn-primary" %></td>
+                        <td><%= link_to "確認", show_confirmation_user_path(user, date: day.worked_on.beginning_of_month), class: "btn btn-primary" %></td>
                       </tr>
                     <% end %>
                   <% end %>
