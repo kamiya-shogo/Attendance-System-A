@@ -3,7 +3,7 @@
     <%= form_with(model: @user, url: attendances_update_one_month_request_user_path(@user), local: true, method: :patch) do |f| %>
       <%= f.fields_for "attendances[]", day do |attendance| %>
         <%= "所属長承認: " %>
-          <% if day.one_month_approval_status.nil? %>
+          <% if day.one_month_approval_status.nil? && day.one_month_request_status.nil? %>
             <%= "未" %><br>
           <% elsif day.one_month_request_status == "申請中" %>
             <%= "#{day.one_month_request_superior}へ#{day.one_month_request_status}" %><br>

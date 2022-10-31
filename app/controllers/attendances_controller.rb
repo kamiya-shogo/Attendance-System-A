@@ -3,6 +3,7 @@ class AttendancesController < ApplicationController
   before_action :set_user_id, only: [:update, :edit_overtime_request, :update_overtime_request, :edit_overtime_notice, :update_overtime_notice, :edit_attendances_change_approval, :update_attendances_change_approval, :edit_one_month_approval, :update_one_month_approval, :attendance_log]
   before_action :logged_in_user, only: [:update, :edit_one_month, :attendance_log]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :admin_impossible, only: [:edit_one_month]
   before_action :set_one_month, only: [:edit_one_month]
   before_action :set_attendance, only: [:update, :edit_overtime_request, :update_overtime_request]
 
@@ -44,6 +45,10 @@ class AttendancesController < ApplicationController
             return
           elsif item[:edit_started_at].present? && item[:edit_finished_at].blank?
             flash[:danger] = "退勤時間が必要です。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date])
+            return
+          elsif item[:edit_started_at].present? && item[:edit_finished_at].present? && item[:edit_started_at].to_s > item[:edit_finished_at].to_s
+            flash[:danger] = "時刻に誤りがあります。"
             redirect_to attendances_edit_one_month_user_url(date: params[:date])
             return
           end
@@ -147,6 +152,7 @@ class AttendancesController < ApplicationController
     redirect_to user_url(@user)
   end
 
+
   # 1ヶ月分の勤怠申請 
   def update_one_month_request
     one_month_request_params.each do |id, item|
@@ -192,13 +198,17 @@ class AttendancesController < ApplicationController
 
   # 勤怠ログ
   def attendance_log
-    #1iは年、2iは月
-    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
-      year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
-      @day = DateTime.parse(year_month) if year_month.present?
-      @attendances = @user.attendances.where(attendances_approval_status: "承認").where(worked_on: @day.all_month)
-    else
-      @attendances = @user.attendances.where(attendances_approval_status: "").order("worked_on ASC")
+    # #1iは年、2iは月
+    # if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
+    #   year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
+    #   @day = DateTime.parse(year_month) if year_month.present?
+    #   @attendances = @user.attendances.where(attendances_approval_status: "承認").where(worked_on: @day.all_month)
+    # else
+    #   @attendances = @user.attendances.where(attendances_approval_status: "").order("worked_on ASC")
+    # end
+    if params["select_year(1i)"].present? && params["select_month(2i)"].present?
+      @first_day = (params["select_year(1i)"] + "-" + params["select_month(2i)"] + "-01").to_date
+      @attendances = @user.attendances.where(worked_on: @first_day..@first_day.end_of_month, attendances_approval_status: "承認").order(:worked_on)
     end
   end
 

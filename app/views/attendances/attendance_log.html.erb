@@ -5,7 +5,12 @@
 
     <%= form_with(url: attendance_log_user_attendance_path, local: true, method: :get) do |f| %>
       <div class="pull-left">
-        <%= f.date_select :worked_on, {use_month_numbers: true,discard_day: true,prompt:["年","月"]},{class:"form-control bootstrap-date-only-width"} %>
+      <%= f.date_select :select_year,
+        { end_year: Time.now.year, prompt: "年", discard_month: "true", discard_day: "true" },
+        { id: "log-sch", class: "form-control form-sch" } %>
+      <%= f.date_select :select_month,
+        { use_month_numbers: true, prompt: "月", discard_year: "true", discard_day: "true" },
+        { id: "log-sch", class: "form-control form-sch" } %>
         <%= f.submit "検索", class: 'btn' %>
       </div>
     <% end %>
@@ -23,16 +28,18 @@
       </tr>
     </thead>
     <tbody>
-      <% @attendances.each do |day| %>
-        <tr>
-          <td><%= day.worked_on.strftime("%Y年%m月%d日(#{$days_of_the_week[day.worked_on.wday]})") %></td>
-          <td colspan="2"><%= l(day.begin_started, format: :time) if day.begin_started.present? %></td>
-          <td colspan="2"><%= l(day.begin_finished, format: :time) if day.begin_finished.present? %></td>
-          <td colspan="2"><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
-          <td colspan="2"><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
-          <td><%= day.attendances_request_superior %></td>
-          <td><%= day.updated_at.strftime("%Y年%m月%d日") %></td>
-        </tr>
+      <% if @first_day.present? %>
+        <% @attendances.each do |day| %>
+          <tr>
+            <td><%= day.worked_on.strftime("%Y年%m月%d日(#{$days_of_the_week[day.worked_on.wday]})") %></td>
+            <td colspan="2"><%= l(day.begin_started, format: :time) if day.begin_started.present? %></td>
+            <td colspan="2"><%= l(day.begin_finished, format: :time) if day.begin_finished.present? %></td>
+            <td colspan="2"><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
+            <td colspan="2"><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
+            <td><%= day.attendances_request_superior %></td>
+            <td><%= day.updated_at.strftime("%Y年%m月%d日") %></td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
