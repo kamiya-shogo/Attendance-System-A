@@ -48,7 +48,12 @@
                         <td><%= day.business_process_content %></td> 
                         <td><%= attendance.select :overtime_request_status, ['なし', '申請中', '承認', '否認'] %></td>
                         <td><%= attendance.check_box :overtime_check %></td>
-                        <td><%= link_to "確認", show_confirmation_user_path(user, attendance), class: "btn btn-primary" %></td>
+                        <td><%= link_to "確認", show_confirmation_user_path(user, date: day.worked_on.beginning_of_month), class: "btn btn-sm btn-primary" %></td>
+                        <%
+=begin%>
+ <td><%= link_to "確認", show_confirmation_user_path(user, attendance), class: "btn btn-primary" %></td> 
+<%
+=end%>
                       </tr>
                     <% end %>
                   <% end %>
